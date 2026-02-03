@@ -3,6 +3,8 @@
   "name": "YouTube Advanced Keyword Filter",
   "version": "1.2",
   "description": "Filter YouTube videos by keywords with allowlist/blocklist support",
+  "author": "tojicb-fushiguro",
+  "homepage_url": "https://github.com/tojicb-fushiguro/YouTube-Filter",
   "permissions": ["storage"],
   "host_permissions": ["https://www.youtube.com/*"],
   "action": {
