@@ -1,3 +1,14 @@
+/**
+ * YouTube Advanced Keyword Filter - Content Script
+ * 
+ * Main filtering logic that runs on all YouTube pages.
+ * Filters videos by title keywords using allowlist/blocklist.
+ * 
+ * @author tojicb-fushiguro
+ * @repository https://github.com/tojicb-fushiguro/YouTube-Filter
+ * @license MIT
+ */
+
 // Default settings
 const DEFAULT_SETTINGS = {
   keywords: "",

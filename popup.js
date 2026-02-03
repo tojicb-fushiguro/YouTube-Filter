@@ -1,3 +1,14 @@
+/**
+ * YouTube Advanced Keyword Filter - Popup Script
+ * 
+ * Handles user interaction with extension settings popup.
+ * Manages saving/loading settings from Chrome storage.
+ * 
+ * @author tojicb-fushiguro
+ * @repository https://github.com/tojicb-fushiguro/YouTube-Filter
+ * @license MIT
+ */
+
 // Default settings
 const DEFAULT_SETTINGS = {
   keywords: "",
