@@ -88,9 +88,7 @@ function filterSidebarVideos(settings) {
     if (!container || processed.has(container)) return;
     processed.add(container);
 
-    if (container) {
-      console.log(`[YouTube Filter] Container type: ${container.tagName}`);
-    }
+    console.log(`[YouTube Filter] Container type: ${container.tagName}`);
 
     let title = link.title || link.getAttribute('aria-label') || link.innerText || '';
     
