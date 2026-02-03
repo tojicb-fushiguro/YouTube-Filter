@@ -1,0 +1,32 @@
+name: Release checksums
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  checksums:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create zip
+        run: |
+          zip -r YouTube-Filter.zip . \
+            -x ".git/*" ".github/*" "node_modules/*" "*.DS_Store" \
+               "YouTube-Filter.zip" "CHECKSUMS.txt"
+
+      - name: Generate SHA256
+        run: |
+          sha256sum YouTube-Filter.zip > CHECKSUMS.txt
+          cat CHECKSUMS.txt
+
+      - name: Upload assets to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            YouTube-Filter.zip
+            CHECKSUMS.txt
