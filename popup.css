@@ -1,4 +1,12 @@
-```css
+/**
+ * YouTube Advanced Keyword Filter - Popup Styles
+ * 
+ * Dark theme styling for the extension popup interface.
+ * 
+ * @author tojicb-fushiguro
+ * @repository https://github.com/tojicb-fushiguro/YouTube-Filter
+ * @license MIT
+ */
 body {
   background: #121212;
   color: #ffffff;
@@ -144,4 +152,3 @@ button.secondary:hover {
   color: #666;
   font-style: normal;
 }
-```
