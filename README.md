@@ -157,6 +157,39 @@ YouTube-Filter/
 - Check if extension is enabled in popup
 - Check browser console (F12) for errors
 
+---
+
+## ❓ Frequently Asked Questions
+
+### Can I use regex patterns?
+Yes! Enable the "Use Regular Expressions" checkbox in the extension popup. Then you can use patterns like:
+- `^Video:` - Matches titles starting with "Video:"
+- `(ads|sponsored)` - Matches either "ads" or "sponsored"
+- `\d{4}` - Matches 4-digit numbers
+
+### Does this work on YouTube Music or YouTube TV?
+Currently, the extension only works on `youtube.com`. Support for YouTube Music and YouTube TV may be added in future versions.
+
+### Can I filter by channel name?
+Yes! Just add the channel name to your blocklist. For example, add `CNN, BBC, Fox News` to block videos from those channels.
+
+### Does this affect video recommendations?
+No. This extension only hides videos visually on your browser. It doesn't affect YouTube's recommendation algorithm or your watch history.
+
+### Can I export/import my filter lists?
+Currently, filter lists are stored in Chrome Sync Storage. They will sync across devices where you're logged into the same Chrome profile. Export/import feature may be added in the future.
+
+### Does this work with YouTube Shorts?
+Yes! The extension filters Shorts in feeds and search results. However, it cannot filter the autoplay feed when you're actively watching Shorts (inside the `/shorts/` player).
+
+### How many keywords can I add?
+There's no hard limit! However, for best performance, we recommend keeping your total keywords under 100. The extension processes each keyword on every video title.
+
+### Does this slow down YouTube?
+No. The extension is highly optimized and runs efficiently in the background. It only processes visible videos and uses debouncing to minimize performance impact.
+
+---
+
 ## 📜 License
 
 MIT License - See LICENSE file for details
