@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "YouTube Advanced Keyword Filter",
   "version": "1.2",
-  "description": "Filter YouTube videos by keywords with allowlist/blocklist support",
+  "description": "Hide unwanted YouTube videos by filtering titles with keywords. Filters what's already loaded - doesn't change YouTube's recommendations.",
   "author": "tojicb-fushiguro",
   "homepage_url": "https://github.com/tojicb-fushiguro/YouTube-Filter",
   "permissions": ["storage"],

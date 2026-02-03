@@ -2,6 +2,150 @@
 
 A powerful Chrome extension that filters YouTube videos by keywords with allowlist/blocklist support.
 
+---
+
+## 🎯 **Why This Extension Exists**
+
+YouTube's algorithm shows you **mixed content** - tutorials, drama, gaming, politics, vlogs all jumbled together. This extension lets you **take control** of what you see without unsubscribing from channels or clearing your history.
+
+**The Problem:**
+- You watch coding tutorials, but YouTube shows you gaming videos
+- You want educational content, but you get entertainment mixed in
+- You hate political content, but it keeps appearing
+- Shorts and compilations clutter your feed
+- You can't focus on specific topics
+
+**The Solution:**
+This extension acts as a **visual filter** - it hides unwanted videos from your feed and shows only what matches your preferences.
+
+---
+
+## 💡 **Real-World Use Cases**
+
+### 1. **Focus Mode (Students/Professionals)**
+**Goal:** Only see educational content while working
+
+**Settings:**
+- **Allowlist:** `tutorial, course, lecture, guide, education, learning`
+- **Blocklist:** `vlog, gaming, entertainment, drama`
+
+**Result:** YouTube becomes a focused learning platform
+
+---
+
+### 2. **Politics-Free Zone**
+**Goal:** Avoid political content while browsing
+
+**Settings:**
+- **Allowlist:** *(leave empty)*
+- **Blocklist:** `trump, biden, politics, election, news, cnn, msnbc, fox`
+
+**Result:** Clean feed with no political content
+
+---
+
+### 3. **Gaming Only**
+**Goal:** Only see gaming videos
+
+**Settings:**
+- **Allowlist:** `gaming, gameplay, walkthrough, playthrough, let's play`
+- **Blocklist:** *(optional)*
+
+**Result:** Pure gaming content feed
+
+---
+
+### 4. **No Shorts, No Compilations**
+**Goal:** Hide short-form content
+
+**Settings:**
+- **Allowlist:** *(leave empty)*
+- **Blocklist:** `shorts, compilation, tiktok, meme, funny moments`
+
+**Result:** Only long-form videos
+
+---
+
+### 5. **Channel-Specific Blocking**
+**Goal:** Block specific creators without unsubscribing
+
+**Settings:**
+- **Blocklist:** `mrbeast, pewdiepie, mkbhd` *(example names)*
+
+**Result:** Videos from these channels are hidden
+
+---
+
+## ⚠️ **Important: What This Extension Does & Doesn't Do**
+
+### ✅ **What It Does**
+- **Filters videos already visible** on your page (homepage, search, sidebar)
+- **Hides videos** based on title keywords using exact substring matching
+- **Works client-side** - runs in your browser, no server communication
+- **Supports regex** - advanced pattern matching for power users
+- **Persists settings** - your filters sync across devices via Chrome
+
+### ❌ **What It DOESN'T Do**
+- **Does NOT change** YouTube's recommendation algorithm
+- **Does NOT request** different videos from YouTube servers
+- **Does NOT affect** what videos YouTube loads or suggests
+- **Does NOT modify** your watch history or subscriptions
+- **Cannot show** videos that YouTube didn't already load
+
+**Think of it like a coffee filter ☕** - it removes unwanted elements from what's already there, but it can't brew new coffee or change what YouTube serves you!
+
+---
+
+## 🚀 **Getting Started: First-Time Setup**
+
+If you're new to YouTube filtering, follow these steps for best results:
+
+### **Step 1: Train YouTube First (Do This Before Using the Extension!)**
+
+The extension can only filter what YouTube shows you. Make sure YouTube is showing the content you want:
+
+1. **Search** for topics you're interested in (e.g., "Python tutorials")
+2. **Watch** 5-10 videos completely (don't skip through them)
+3. **Like** and **comment** on videos you enjoy
+4. **Subscribe** to relevant channels
+5. **Use YouTube's "Not Interested"** feature on unwanted videos
+6. **Wait 1-3 days** for YouTube to adjust its recommendations
+
+**Why this matters:** If YouTube only shows you gaming videos, filtering for "tutorials" will leave you with an empty feed!
+
+---
+
+### **Step 2: Start with Blocklist (Recommended for Beginners)**
+
+Don't jump to Allowlist immediately - it's very restrictive!
+
+1. Open the extension popup (click the extension icon)
+2. **Enable** the "Enable Filter" checkbox
+3. Leave **Allowlist** empty for now
+4. Add keywords to **Blocklist** for content you DON'T want:
+   - Example: `vlog, react, reaction, drama, gossip, shorts`
+5. Click **Save Settings**
+6. Refresh YouTube
+
+**Result:** Unwanted content disappears, everything else stays visible
+
+---
+
+### **Step 3: Advanced Filtering with Allowlist (Optional)**
+
+Once comfortable, try Allowlist for laser-focused browsing:
+
+1. Add keywords you WANT to see:
+   - Example: `python, javascript, coding, tutorial, programming`
+2. **⚠️ Warning:** This will hide EVERYTHING that doesn't match!
+3. Only use this when you want extreme focus
+
+**Pro Tip:** Combine both for best results:
+- **Allowlist:** `tutorial, course, education`
+- **Blocklist:** `politics, drama, vlog`
+
+---
+
 ## ✨ Features
 
 - **Allowlist Mode**: Only show videos matching specific keywords
@@ -55,25 +199,47 @@ The extension does **exact substring matching** in video titles.
 
 ## 📖 Usage Examples
 
-### Example 1: Block Political & Reaction Content
+### Example 1: Complete Beginner Setup
+
+**Day 1-3: Train YouTube**
+1. Search "Python programming tutorials"
+2. Watch 10 videos completely
+3. Subscribe to 3-5 tutorial channels
+4. Like and comment on helpful videos
+
+**Day 4: Set Up Extension**
+- Blocklist: `gaming, vlog, entertainment, music`
+- Allowlist: *(leave empty)*
+
+**Result:** Your feed now focuses on tutorials with noise removed
+
+---
+
+### Example 2: Block Political & Reaction Content
 ```
 Allowlist: (leave empty)
 Blocklist: react, reacts, reaction, trump, biden, politics, political, msnbc, cnn, fox, news
 ```
 
-### Example 2: ONLY Show Gaming Content
+---
+
+### Example 3: ONLY Show Gaming Content
 ```
 Allowlist: gaming, gameplay, game, walkthrough, playthrough, minecraft, fortnite
-Blocklist: (optional)
+Blocklist: (optional - add specific games you don't like)
 ```
 
-### Example 3: ONLY Show Educational Content, No Politics
+---
+
+### Example 4: ONLY Show Educational Content, No Politics
 ```
 Allowlist: tutorial, education, learn, course, documentary, science, technology
 Blocklist: trump, biden, politics, election, news
 ```
 
-### Example 4: Block Specific Content Types
+---
+
+### Example 5: Block Specific Content Types
 ```
 Allowlist: (leave empty)
 Blocklist: vlog, podcast, asmr, mukbang, shorts, compilation, funny, prank
@@ -148,6 +314,58 @@ If you download a build from anywhere (Telegram/Discord/etc.), compare its SHA-2
 **Windows (PowerShell):**
 ```powershell
 Get-FileHash .\YouTube-Filter.zip -Algorithm SHA256
+```
+
+---
+
+## 🚫 **Common Mistakes to Avoid**
+
+### Mistake 1: Using Allowlist Without Training YouTube First
+**Problem:** You set Allowlist to `course, tutorial` but see an empty feed
+
+**Why:** YouTube isn't showing you those videos yet!
+
+**Fix:** 
+- Remove Allowlist keywords
+- Use Blocklist instead
+- Or spend 3-5 days watching content you want
+
+---
+
+### Mistake 2: Expecting Different Video Recommendations
+**Problem:** "I added 'python' but YouTube still recommends gaming"
+
+**Why:** The extension doesn't change what YouTube recommends, it only hides what you don't want
+
+**Fix:** 
+- Use YouTube's algorithm training (watch, like, subscribe)
+- Use the extension to filter OUT unwanted content
+- Be patient - algorithms take time to adjust
+
+---
+
+### Mistake 3: Too Strict Allowlist
+**Problem:** Allowlist is `react, tutorial` but you see almost nothing
+
+**Why:** Only videos with BOTH words in the title will show (very restrictive!)
+
+**Fix:** 
+- Add more variations: `react, reactjs, react.js, tutorial, guide, course`
+- Or use Blocklist instead
+
+---
+
+### Mistake 4: Exact Word Matching Issues
+**Problem:** Blocklist has `reaction` but videos titled "I reacted to this" still appear
+
+**Why:** The extension uses exact substring matching - "reaction" ≠ "reacted"
+
+**Fix:** 
+- Add all variations: `react, reacts, reaction, reacting, reacted, reactor`
+- Or enable "Use Regular Expressions" and use: `react(s|ion|ing|ed|or)?`
+
+---
+
 ## 🛠️ Technical Details
 
 - **Manifest Version**: 3
@@ -187,32 +405,245 @@ YouTube-Filter/
 
 ## ❓ Frequently Asked Questions
 
-### Can I use regex patterns?
-Yes! Enable the "Use Regular Expressions" checkbox in the extension popup. Then you can use patterns like:
-- `^Video:` - Matches titles starting with "Video:"
-- `(ads|sponsored)` - Matches either "ads" or "sponsored"
-- `\d{4}` - Matches 4-digit numbers
+### Why am I not seeing ANY videos after setting filters?
 
-### Does this work on YouTube Music or YouTube TV?
-Currently, the extension only works on `youtube.com`. Support for YouTube Music and YouTube TV may be added in future versions.
+**Most Common Reason:** You're using **Allowlist mode** and YouTube isn't showing videos with those keywords yet.
+
+**How Allowlist works:**
+- Only shows videos that match your keywords
+- Everything else gets hidden (very restrictive!)
+- If YouTube loads 20 videos and none match, you see nothing
+
+**Solution:**
+1. **Option A:** Use Blocklist instead (removes unwanted, keeps everything else)
+2. **Option B:** Train YouTube by watching your desired content for 3-5 days
+3. **Option C:** Add more keyword variations to your Allowlist
+
+**Example of the problem:**
+```
+Your Allowlist: "python programming"
+YouTube shows you: gaming videos, vlogs, music
+Result: Empty feed (nothing matches!)
+```
+
+---
+
+### I added "course" to filters but still see gaming videos. What's wrong?
+
+You need to understand **Allowlist vs Blocklist**:
+
+**If you want to REMOVE gaming:**
+- Use **Blocklist:** `gaming, gameplay, game, let's play, walkthrough`
+- This hides gaming content, shows everything else
+
+**If you want ONLY courses:**
+- Use **Allowlist:** `course, tutorial, education, lecture`
+- This shows ONLY educational content (very restrictive!)
+- Everything else disappears
+
+**Best approach for most users:** Use **Blocklist** to remove noise!
+
+---
+
+### Will this extension make YouTube show me different videos?
+
+**No.** This extension is **100% client-side** and does not communicate with YouTube's servers.
+
+**What actually happens:**
+1. YouTube loads videos based on your watch history and algorithm
+2. Videos appear in your browser
+3. The extension scans the titles
+4. Matching videos get hidden using CSS (`display: none`)
+5. You only see what passes the filter
+
+**To get different videos from YouTube itself:**
+- Watch videos on topics you like (trains the algorithm)
+- Use YouTube's "Not Interested" feature
+- Clear unwanted videos from watch history
+- Subscribe to channels you enjoy
+- Give it 1-3 days to adjust
+
+**The extension filters your feed, it doesn't generate new content!**
+
+---
+
+### What's the difference between Allowlist and Blocklist?
+
+**Blocklist (Recommended for 90% of users):**
+- **Purpose:** Remove unwanted content
+- **Behavior:** Hides videos matching keywords, shows everything else
+- **Example:** `drama, gossip, vlog, shorts` → Removes these topics
+- **Use when:** You want to clean up your feed
+
+**Allowlist (Advanced - Very restrictive!):**
+- **Purpose:** Ultra-focused filtering
+- **Behavior:** ONLY shows videos matching keywords, hides everything else
+- **Example:** `python, javascript, coding` → Only programming videos appear
+- **Use when:** You want extreme focus on one topic
+
+**Pro Tip:** Start with Blocklist. Only use Allowlist when you're comfortable with how the extension works!
+
+---
+
+### Why does it say "0/20 hidden" but I have filters set?
+
+This means **none of the 20 videos on screen matched your filter keywords**.
+
+**Possible reasons:**
+
+1. **Your keywords don't appear in any video titles**
+   - Check the actual titles of videos you see
+   - Maybe your keywords aren't exact matches
+
+2. **YouTube isn't showing that type of content**
+   - If you filter for "tutorials" but YouTube shows gaming, nothing happens
+   - Train YouTube's algorithm first!
+
+3. **Typo or wrong keywords**
+   - Double-check your spelling
+   - Remember: case-insensitive but exact substring matching
+
+4. **You're using Allowlist and nothing matches**
+   - Very common mistake!
+   - Solution: Use Blocklist instead
+
+**Debug tip:** Press F12 in Chrome, go to Console tab, look for `[YouTube Filter]` messages to see what's being filtered!
+
+---
 
 ### Can I filter by channel name?
-Yes! Just add the channel name to your blocklist. For example, add `CNN, BBC, Fox News` to block videos from those channels.
 
-### Does this affect video recommendations?
-No. This extension only hides videos visually on your browser. It doesn't affect YouTube's recommendation algorithm or your watch history.
+**Yes!** Just add the channel name (or part of it) to your keywords.
 
-### Can I export/import my filter lists?
-Currently, filter lists are stored in Chrome Sync Storage. They will sync across devices where you're logged into the same Chrome profile. Export/import feature may be added in the future.
+**Example:**
+```
+Blocklist: CNN, BBC, Fox News, MSNBC, New York Times
+```
 
-### Does this work with YouTube Shorts?
-Yes! The extension filters Shorts in feeds and search results. However, it cannot filter the autoplay feed when you're actively watching Shorts (inside the `/shorts/` player).
+Any video with these words in the title will be hidden. Since many channels include their name in video titles, this effectively blocks them.
+
+**Note:** This isn't perfect - it only works if the channel name appears in the video title.
+
+---
+
+### Does this affect YouTube's algorithm or my recommendations?
+
+**No.** The extension only affects what you **see** in your browser, not what YouTube **knows** about you.
+
+**What YouTube still tracks:**
+- Your watch history
+- Your likes/dislikes
+- Your subscriptions
+- Your search history
+- Videos you click (even if hidden by extension)
+
+**The extension:**
+- Only hides videos visually using CSS
+- Doesn't block tracking or analytics
+- Doesn't modify network requests
+- Is completely transparent to YouTube's servers
+
+**To actually change YouTube's recommendations:** Use YouTube's built-in tools (Not Interested, Don't Recommend Channel, etc.)
+
+---
+
+### Can I use regex patterns instead of simple keywords?
+
+**Yes!** Enable the "Use Regular Expressions" checkbox.
+
+**Examples:**
+
+**Match titles starting with "Tutorial:"**
+```
+^Tutorial:
+```
+
+**Match either "ads" or "sponsored":**
+```
+(ads|sponsored|ad)
+```
+
+**Match 4-digit years:**
+```
+\d{4}
+```
+
+**Match variations of "react":**
+```
+react(s|ion|ing|ed|or)?
+```
+
+**⚠️ Warning:** Invalid regex patterns will be ignored. Check the browser console (F12) for errors.
+
+---
 
 ### How many keywords can I add?
-There's no hard limit! However, for best performance, we recommend keeping your total keywords under 100. The extension processes each keyword on every video title.
+
+**Technically:** No hard limit!
+
+**Practically:** For best performance, keep your total keywords under 100.
+
+**Why:** The extension checks every keyword against every video title. With 1000 keywords and 50 videos, that's 50,000 comparisons!
+
+**Best practice:**
+- Start with 10-20 keywords
+- Add more as needed
+- Use regex for complex patterns instead of many similar keywords
+
+---
 
 ### Does this slow down YouTube?
-No. The extension is highly optimized and runs efficiently in the background. It only processes visible videos and uses debouncing to minimize performance impact.
+
+**No!** The extension is highly optimized:
+
+- ✅ Uses **debouncing** - waits 500ms before filtering to avoid excessive checks
+- ✅ Uses **Mutation Observers** - only re-filters when content changes
+- ✅ Processes only **visible videos** - not the entire page
+- ✅ **Caches settings** - doesn't re-read storage on every filter
+- ✅ Uses **efficient selectors** - targets specific YouTube elements
+
+**Performance impact:** Negligible on modern computers. You won't notice any slowdown!
+
+---
+
+### Does this work with YouTube Premium?
+
+**Yes!** The extension is completely independent of YouTube Premium.
+
+- Works on free and Premium accounts
+- Doesn't interfere with Premium features
+- Doesn't affect ad-blocking (Premium is ad-free anyway)
+
+---
+
+### Can I export/import my keyword lists?
+
+**Currently:** No direct export/import feature.
+
+**However:** Settings are stored in Chrome Sync Storage, so they:
+- ✅ Sync across all your Chrome browsers (same Google account)
+- ✅ Persist after browser restart
+- ✅ Survive extension updates
+
+**Workaround for backup:**
+1. Open extension popup
+2. Copy your keywords from the text boxes
+3. Save to a text file
+4. Paste back when needed
+
+**Future:** Export/import feature may be added in a future version!
+
+---
+
+### Does this work on YouTube Music or YouTube TV?
+
+Currently, the extension only works on `youtube.com`. Support for YouTube Music and YouTube TV may be added in future versions.
+
+---
+
+### Does this work with YouTube Shorts?
+
+Yes! The extension filters Shorts in feeds and search results. However, it cannot filter the autoplay feed when you're actively watching Shorts (inside the `/shorts/` player).
 
 ---
 
