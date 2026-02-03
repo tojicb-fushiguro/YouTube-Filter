@@ -79,12 +79,16 @@ function filterSidebarVideos(settings) {
 
   links.forEach(link => {
     const container = link.closest('ytd-compact-video-renderer') ||
+                     link.closest('ytd-compact-radio-renderer') ||      // For live streams
+                     link.closest('ytd-compact-playlist-renderer') ||    // For playlists
                      link.closest('[class*="video"]') ||
                      link.closest('[id*="video"]') ||
                      link.parentElement?.parentElement;
 
     if (!container || processed.has(container)) return;
     processed.add(container);
+
+    console.log(`[YouTube Filter] Container type: ${container.tagName}`);
 
     let title = link.title || link.getAttribute('aria-label') || link.innerText || '';
     
