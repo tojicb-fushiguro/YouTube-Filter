@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 420px;
+      background: #121212;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .status {
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      text-align: center;
+      display: none;
+      font-weight: 500;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.success {
+      background: #0f5132;
+      color: #d1e7dd;
+      border: 1px solid #0a3622;
+    }
+
+    .status.error {
+      background: #58151c;
+      color: #f8d7da;
+      border: 1px solid #3d0a0f;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .checkbox-group strong,
+    .checkbox-group label {
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .section {
+      margin-bottom: 18px;
+    }
+
+    .section-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      background: #1e1e1e;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #ff0000;
+    }
+
+    .help-text {
+      display: block;
+      color: #888;
+      font-size: 11px;
+      font-style: italic;
+      margin-bottom: 4px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 10px;
+    }
+
+    #save {
+      background: #ff0000;
+      color: #fff;
+    }
+
+    #save:hover {
+      background: #cc0000;
+    }
+
+    #reset {
+      background: #333;
+      color: #fff;
+      font-weight: normal;
+    }
+
+    #reset:hover {
+      background: #444;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .footer {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #333;
+      text-align: center;
+      font-size: 11px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h2>🎬 YouTube Filter</h2>
+
+  <div class="status" id="status"></div>
+
+  <div class="checkbox-group">
+    <input type="checkbox" id="enabled" />
+    <strong>Enable Filter</strong>
+  </div>
+
+  <div class="section">
+    <label class="section-label" for="keywords">✅ Allowlist Keywords</label>
+    <input 
+      id="keywords" 
+      type="text"
+      placeholder="tutorial, gaming, coding"
+    />
+    <small class="help-text">Comma-separated. Leave empty to allow all videos</small>
+  </div>
+
+  <div class="section">
+    <label class="section-label" for="blocklist">🚫 Blocklist Keywords</label>
+    <input 
+      id="blocklist" 
+      type="text"
+      placeholder="vlog, reaction, shorts"
+    />
+    <small class="help-text">Videos matching these will be hidden</small>
+  </div>
+
+  <div class="checkbox-group">
+    <input type="checkbox" id="regex" />
+    <label>Use Regular Expressions</label>
+  </div>
+
+  <button id="save">Save Settings</button>
+  <button id="reset">Reset to Default</button>
+
+  <div class="footer">
+    Filters apply to video titles only
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
