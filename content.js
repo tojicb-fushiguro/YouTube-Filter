@@ -36,9 +36,11 @@ let filterTimeout = null;
  * Targets YouTube-specific containers for better performance
  */
 function getObserverTarget() {
-  return document.querySelector('ytd-app') || 
+  // Bug #3 Fix: Priority order changed to reduce excessive mutations
+  // ytd-page-manager is less noisy than ytd-app
+  return document.querySelector('ytd-page-manager') || 
          document.querySelector('#content') || 
-         document.querySelector('ytd-page-manager') || 
+         document.querySelector('ytd-app') || 
          document.body;
 }
 
@@ -380,14 +382,19 @@ function runAllFilters() {
   // Optimization: disconnect observer during batch filtering to avoid recursive calls
   observer.disconnect();
   
-  filterVideos(currentSettings);
-  filterShorts(currentSettings);
-  filterSidebarVideos(currentSettings);
-  
-  // Reconnect observer after filtering
-  const target = getObserverTarget();
-  if (target) {
-    observer.observe(target, { childList: true, subtree: true });
+  // Bug #4 Fix: Wrap in try/finally to ensure observer always reconnects
+  try {
+    filterVideos(currentSettings);
+    filterShorts(currentSettings);
+    filterSidebarVideos(currentSettings);
+  } catch (error) {
+    console.error('[YouTube Filter] Error during filtering:', error);
+  } finally {
+    // ALWAYS reconnect observer, even if filtering failed
+    const target = getObserverTarget();
+    if (target) {
+      observer.observe(target, { childList: true, subtree: true });
+    }
   }
   
   console.log('[YouTube Filter] ========== DONE ==========');
@@ -424,13 +431,20 @@ if (document.body) {
   console.log(`[YouTube Filter] Observing: ${target.tagName || 'body'}`);
 }
 
+// Bug #1 Fix: Store URL observer in variable for proper management
+// Bug #2 Fix: Add null check before observing
 let lastUrl = location.href;
-new MutationObserver(() => {
+const urlObserver = new MutationObserver(() => {
   if (location.href !== lastUrl) {
     lastUrl = location.href;
     setTimeout(runAllFilters, 1000);
   }
-}).observe(document.querySelector('title'), { childList: true });
+});
+
+const titleElement = document.querySelector('title');
+if (titleElement) {
+  urlObserver.observe(titleElement, { childList: true });
+}
 
 browser.runtime.onMessage.addListener((msg) => {
   if (msg.action === 'refilter') {
