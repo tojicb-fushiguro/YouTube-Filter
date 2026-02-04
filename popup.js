@@ -2,7 +2,8 @@
  * YouTube Advanced Keyword Filter - Popup Script
  * 
  * Handles user interaction with extension settings popup.
- * Manages saving/loading settings from Chrome storage.
+ * Manages saving/loading settings from browser storage.
+ * Cross-browser compatible (Chrome & Firefox).
  * 
  * @author tojicb-fushiguro
  * @repository https://github.com/tojicb-fushiguro/YouTube-Filter
@@ -18,13 +19,16 @@ const DEFAULT_SETTINGS = {
 };
 
 // Load current settings when popup opens
-function loadSettings() {
-  chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+async function loadSettings() {
+  try {
+    const settings = await browser.storage.sync.get(DEFAULT_SETTINGS);
     document.getElementById("keywords").value = settings.keywords || "";
     document.getElementById("blocklist").value = settings.blocklist || "";
     document.getElementById("regex").checked = settings.regex || false;
     document.getElementById("enabled").checked = settings.enabled !== false;
-  });
+  } catch (error) {
+    console.error('[YouTube Filter] Error loading settings:', error);
+  }
 }
 
 // Show status message
@@ -39,7 +43,7 @@ function showStatus(message, isError = false) {
 }
 
 // Save settings
-document.getElementById("save").addEventListener("click", () => {
+document.getElementById("save").addEventListener("click", async () => {
   const settings = {
     keywords: document.getElementById("keywords").value.trim(),
     blocklist: document.getElementById("blocklist").value.trim(),
@@ -47,32 +51,38 @@ document.getElementById("save").addEventListener("click", () => {
     enabled: document.getElementById("enabled").checked
   };
 
-  chrome.storage.sync.set(settings, () => {
-    if (chrome.runtime.lastError) {
-      showStatus("Error saving settings", true);
-      console.error(chrome.runtime.lastError);
-    } else {
-      showStatus("✓ Settings saved successfully");
-      
-      // Notify content script to re-filter
-      chrome.tabs.query({ url: "https://www.youtube.com/*" }, (tabs) => {
-        tabs.forEach(tab => {
-          chrome.tabs.sendMessage(tab.id, { action: "refilter" }).catch(() => {
-            // Ignore errors if content script isn't ready
-          });
+  try {
+    await browser.storage.sync.set(settings);
+    showStatus("✓ Settings saved successfully");
+    
+    // Notify content script to re-filter
+    try {
+      const tabs = await browser.tabs.query({ url: "https://www.youtube.com/*" });
+      tabs.forEach(tab => {
+        browser.tabs.sendMessage(tab.id, { action: "refilter" }).catch(() => {
+          // Ignore errors if content script isn't ready
         });
       });
+    } catch (error) {
+      // Ignore errors - settings are saved, just couldn't notify tabs
     }
-  });
+  } catch (error) {
+    showStatus("Error saving settings", true);
+    console.error('[YouTube Filter] Error saving settings:', error);
+  }
 });
 
 // Reset to defaults
-document.getElementById("reset").addEventListener("click", () => {
+document.getElementById("reset").addEventListener("click", async () => {
   if (confirm("Reset all settings to default?")) {
-    chrome.storage.sync.set(DEFAULT_SETTINGS, () => {
-      loadSettings();
+    try {
+      await browser.storage.sync.set(DEFAULT_SETTINGS);
+      await loadSettings();
       showStatus("✓ Reset to defaults");
-    });
+    } catch (error) {
+      showStatus("Error resetting settings", true);
+      console.error('[YouTube Filter] Error resetting settings:', error);
+    }
   }
 });
 

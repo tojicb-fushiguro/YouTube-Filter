@@ -1,6 +1,6 @@
 # 🎬 YouTube Advanced Keyword Filter
 
-A powerful Chrome extension that filters YouTube videos by keywords with allowlist/blocklist support.
+A powerful browser extension that filters YouTube videos by keywords with allowlist/blocklist support. Compatible with **Chrome** and **Firefox**.
 
 ## ✨ Features
 
@@ -14,16 +14,34 @@ A powerful Chrome extension that filters YouTube videos by keywords with allowli
 - **Regex Support**: Advanced pattern matching (optional)
 - **Real-time Filtering**: Automatically filters as you browse
 - **Persistent Settings**: Your filters are saved across sessions
+- **Cross-Browser Support**: Works on both Chrome and Firefox
 
 ## 📥 Installation
 
-### From Source (Developer Mode)
+### Chrome/Chromium
+
+#### From Source (Developer Mode)
 
 1. Download or clone this repository
 2. Open Chrome and navigate to `chrome://extensions/`
 3. Enable "Developer mode" (toggle in top-right corner)
 4. Click "Load unpacked"
 5. Select the extension folder
+
+### Firefox
+
+#### From Source (Temporary Installation)
+
+1. Download or clone this repository
+2. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
+3. Click "Load Temporary Add-on..."
+4. Select the `manifest.json` file from the extension folder
+5. Note: Temporary add-ons are removed when Firefox restarts
+
+#### From Firefox Add-ons (Coming Soon)
+
+The extension will be published to Firefox Add-ons (AMO) soon. Once published, you'll be able to install it directly from:
+- Firefox Add-ons: [Link will be added after publication]
 
 ## 🎯 How to Use
 
@@ -151,19 +169,22 @@ Get-FileHash .\YouTube-Filter.zip -Algorithm SHA256
 ## 🛠️ Technical Details
 
 - **Manifest Version**: 3
+- **Browser Support**: Chrome, Firefox (109+)
 - **Permissions**: `storage`
 - **Host Permissions**: `https://www.youtube.com/*`
 - **Content Script**: Runs on all YouTube pages
-- **Storage**: Chrome Sync Storage (settings sync across devices)
+- **Storage**: Browser Sync Storage (settings sync across devices)
+- **Cross-Browser Compatibility**: Uses WebExtension Polyfill pattern
 
 ### Files Structure
 ```
 YouTube-Filter/
-├── manifest.json       # Extension configuration
-├── content.js          # Main filtering logic
-├── popup.html          # Extension popup UI
-├── popup.js            # Popup interaction logic
-└── popup.css           # Popup styling
+├── manifest.json          # Extension configuration
+├── browser-polyfill.js    # Cross-browser compatibility layer
+├── content.js             # Main filtering logic
+├── popup.html             # Extension popup UI
+├── popup.js               # Popup interaction logic
+└── popup.css              # Popup styling
 ```
 
 ## 🐛 Troubleshooting
