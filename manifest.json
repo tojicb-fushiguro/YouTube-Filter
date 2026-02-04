@@ -5,6 +5,12 @@
   "description": "Filter YouTube videos by keywords with allowlist/blocklist support",
   "author": "tojicb-fushiguro",
   "homepage_url": "https://github.com/tojicb-fushiguro/YouTube-Filter",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "youtube-filter@tojicb-fushiguro.github.io",
+      "strict_min_version": "109.0"
+    }
+  },
   "permissions": ["storage"],
   "host_permissions": ["https://www.youtube.com/*"],
   "action": {
@@ -13,7 +19,7 @@
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],
-      "js": ["content.js"],
+      "js": ["browser-polyfill.js", "content.js"],
       "run_at": "document_end"
     }
   ]

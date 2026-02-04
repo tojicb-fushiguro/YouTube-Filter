@@ -3,6 +3,7 @@
  * 
  * Main filtering logic that runs on all YouTube pages.
  * Filters videos by title keywords using allowlist/blocklist.
+ * Cross-browser compatible (Chrome & Firefox).
  * 
  * @author tojicb-fushiguro
  * @repository https://github.com/tojicb-fushiguro/YouTube-Filter
@@ -223,14 +224,17 @@ function scheduleFilter() {
   filterTimeout = setTimeout(runAllFilters, 500);
 }
 
-function initialize() {
+async function initialize() {
   console.log('[YouTube Filter] 🚀 Starting');
-  chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+  try {
+    const settings = await browser.storage.sync.get(DEFAULT_SETTINGS);
     currentSettings = settings;
     console.log('[YouTube Filter] Settings:', settings);
     runAllFilters();
     setTimeout(runAllFilters, 1500);
-  });
+  } catch (error) {
+    console.error('[YouTube Filter] Error loading settings:', error);
+  }
 }
 
 const observer = new MutationObserver(() => scheduleFilter());
@@ -247,21 +251,27 @@ new MutationObserver(() => {
   }
 }).observe(document.querySelector('title'), { childList: true });
 
-chrome.runtime.onMessage.addListener((msg) => {
+browser.runtime.onMessage.addListener(async (msg) => {
   if (msg.action === 'refilter') {
-    chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+    try {
+      const settings = await browser.storage.sync.get(DEFAULT_SETTINGS);
       currentSettings = settings;
       runAllFilters();
-    });
+    } catch (error) {
+      console.error('[YouTube Filter] Error reloading settings:', error);
+    }
   }
 });
 
-chrome.storage.onChanged.addListener((changes, namespace) => {
+browser.storage.onChanged.addListener(async (changes, namespace) => {
   if (namespace === 'sync') {
-    chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
+    try {
+      const settings = await browser.storage.sync.get(DEFAULT_SETTINGS);
       currentSettings = settings;
       runAllFilters();
-    });
+    } catch (error) {
+      console.error('[YouTube Filter] Error handling storage change:', error);
+    }
   }
 });
 
