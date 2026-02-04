@@ -32,6 +32,17 @@ let currentSettings = {
 let filterTimeout = null;
 
 /**
+ * Get the optimal MutationObserver target
+ * Targets YouTube-specific containers for better performance
+ */
+function getObserverTarget() {
+  return document.querySelector('ytd-app') || 
+         document.querySelector('#content') || 
+         document.querySelector('ytd-page-manager') || 
+         document.body;
+}
+
+/**
  * Escape special regex characters for safe regex construction
  */
 function escapeRegex(str) {
@@ -184,6 +195,7 @@ function applyFilterStyle(container, shouldShow, settings) {
       container.style.filter = 'blur(8px)';
       container.style.pointerEvents = 'none';
       container.setAttribute('data-filtered', 'soft');
+      container.setAttribute('aria-label', 'Filtered content (blurred)');
     } else {
       // Hard-hide: completely hide element (default behavior)
       container.style.display = 'none';
@@ -191,6 +203,7 @@ function applyFilterStyle(container, shouldShow, settings) {
       container.style.filter = '';
       container.style.pointerEvents = '';
       container.setAttribute('data-filtered', 'hard');
+      container.setAttribute('aria-hidden', 'true');
     }
   } else {
     // Reset all styles when showing
@@ -199,6 +212,8 @@ function applyFilterStyle(container, shouldShow, settings) {
     container.style.filter = '';
     container.style.pointerEvents = '';
     container.removeAttribute('data-filtered');
+    container.removeAttribute('aria-label');
+    container.removeAttribute('aria-hidden');
   }
 }
 
@@ -370,11 +385,7 @@ function runAllFilters() {
   filterSidebarVideos(currentSettings);
   
   // Reconnect observer after filtering
-  const target = document.querySelector('ytd-app') || 
-                 document.querySelector('#content') || 
-                 document.querySelector('ytd-page-manager') || 
-                 document.body;
-  
+  const target = getObserverTarget();
   if (target) {
     observer.observe(target, { childList: true, subtree: true });
   }
@@ -408,11 +419,7 @@ const observer = new MutationObserver(() => scheduleFilter());
 
 // Optimization: Observe more specific YouTube container instead of entire body
 if (document.body) {
-  const target = document.querySelector('ytd-app') || 
-                 document.querySelector('#content') || 
-                 document.querySelector('ytd-page-manager') || 
-                 document.body;
-  
+  const target = getObserverTarget();
   observer.observe(target, { childList: true, subtree: true });
   console.log(`[YouTube Filter] Observing: ${target.tagName || 'body'}`);
 }
