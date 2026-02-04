@@ -163,18 +163,18 @@ To see what the extension is doing:
 ### Permissions (why they’re needed)
 This extension requests only:
 - **`storage`** — to save your allowlist/blocklist settings.
-- **`https://www.youtube.com/*`** — to run the filter on YouTube pages and hide/show videos in the UI. :contentReference[oaicite:1]{index=1}
+- **`https://www.youtube.com/*`** — to run the filter on YouTube pages and hide/show videos in the UI.
 
-It does **not** request “all websites” access, cookies, downloads, or other sensitive permissions. :contentReference[oaicite:2]{index=2}
+It does **not** request “all websites” access, cookies, downloads, or other sensitive permissions.
 
 ### Data handling
-- Filtering runs **locally in your browser** by reading video titles from the YouTube page and hiding/showing items. :contentReference[oaicite:3]{index=3}
+- Filtering runs **locally in your browser** by reading video titles from the YouTube page and hiding/showing items.
 - The extension **does not collect analytics/telemetry** and **does not send your data anywhere**.
-- Your settings are saved using Chrome extension storage (sync storage, so settings may sync across your devices if Chrome Sync is enabled). :contentReference[oaicite:4]{index=4}
+- Your settings are saved using Chrome extension storage (sync storage, so settings may sync across your devices if Chrome Sync is enabled).
 
 ### Verify the source yourself (quick checks)
 If you want to verify what the extension does:
-1. Open `manifest.json` and confirm permissions are only `storage` + `https://www.youtube.com/*`. :contentReference[oaicite:5]{index=5}
+1. Open `manifest.json` and confirm permissions are only `storage` + `https://www.youtube.com/*`.
 2. Search the source for network/exfil keywords:
    - `fetch`, `XMLHttpRequest`, `WebSocket`, `sendBeacon`
 
@@ -184,6 +184,7 @@ If you download a build from anywhere (Telegram/Discord/etc.), compare its SHA-2
 **Windows (PowerShell):**
 ```powershell
 Get-FileHash .\YouTube-Filter.zip -Algorithm SHA256
+```
 ## 🛠️ Technical Details
 
 - **Manifest Version**: 3
