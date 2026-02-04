@@ -78,9 +78,18 @@
         sendMessage: function(tabId, message) {
           return new Promise((resolve, reject) => {
             chrome.tabs.sendMessage(tabId, message, (response) => {
+              // For tabs.sendMessage, we often want to ignore errors when content script isn't ready
+              // But we still need to check for other errors
               if (chrome.runtime.lastError) {
-                // Ignore errors if content script isn't ready
-                resolve(response);
+                // Check if it's the common "Could not establish connection" error
+                if (chrome.runtime.lastError.message && 
+                    chrome.runtime.lastError.message.includes('Could not establish connection')) {
+                  // Ignore connection errors (content script not ready)
+                  resolve(undefined);
+                } else {
+                  // Reject for other errors
+                  reject(chrome.runtime.lastError);
+                }
               } else {
                 resolve(response);
               }

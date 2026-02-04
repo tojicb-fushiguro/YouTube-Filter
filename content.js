@@ -251,15 +251,18 @@ new MutationObserver(() => {
   }
 }).observe(document.querySelector('title'), { childList: true });
 
-browser.runtime.onMessage.addListener(async (msg) => {
+browser.runtime.onMessage.addListener((msg) => {
   if (msg.action === 'refilter') {
-    try {
-      const settings = await browser.storage.sync.get(DEFAULT_SETTINGS);
-      currentSettings = settings;
-      runAllFilters();
-    } catch (error) {
-      console.error('[YouTube Filter] Error reloading settings:', error);
-    }
+    // Return Promise to indicate async handling
+    return (async () => {
+      try {
+        const settings = await browser.storage.sync.get(DEFAULT_SETTINGS);
+        currentSettings = settings;
+        runAllFilters();
+      } catch (error) {
+        console.error('[YouTube Filter] Error reloading settings:', error);
+      }
+    })();
   }
 });
 
