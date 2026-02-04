@@ -36,8 +36,7 @@ let filterTimeout = null;
  * Targets YouTube-specific containers for better performance
  */
 function getObserverTarget() {
-  // Bug #3 Fix: Priority order changed to reduce excessive mutations
-  // ytd-page-manager is less noisy than ytd-app
+  // Priority: ytd-page-manager (least noisy) → #content → ytd-app → body
   return document.querySelector('ytd-page-manager') || 
          document.querySelector('#content') || 
          document.querySelector('ytd-app') || 
@@ -379,10 +378,12 @@ function filterShorts(settings) {
 function runAllFilters() {
   console.log('[YouTube Filter] ========== FILTERING ==========');
   
-  // Optimization: disconnect observer during batch filtering to avoid recursive calls
+  // Disconnect BOTH observers during batch filtering to avoid recursive calls
   observer.disconnect();
+  if (urlObserver) {
+    urlObserver.disconnect();
+  }
   
-  // Bug #4 Fix: Wrap in try/finally to ensure observer always reconnects
   try {
     filterVideos(currentSettings);
     filterShorts(currentSettings);
@@ -390,10 +391,18 @@ function runAllFilters() {
   } catch (error) {
     console.error('[YouTube Filter] Error during filtering:', error);
   } finally {
-    // ALWAYS reconnect observer, even if filtering failed
+    // ALWAYS reconnect both observers, even if filtering failed
     const target = getObserverTarget();
     if (target) {
       observer.observe(target, { childList: true, subtree: true });
+    }
+    
+    // Reconnect URL observer
+    if (urlObserver) {
+      const urlObserverTarget = document.querySelector('title') || document.head || document.documentElement;
+      if (urlObserverTarget) {
+        urlObserver.observe(urlObserverTarget, { childList: true, subtree: true });
+      }
     }
   }
   
@@ -441,9 +450,11 @@ const urlObserver = new MutationObserver(() => {
   }
 });
 
-const titleElement = document.querySelector('title');
-if (titleElement) {
-  urlObserver.observe(titleElement, { childList: true });
+// Safe fallback: try <title>, then document.head, then document.documentElement
+const urlObserverTarget = document.querySelector('title') || document.head || document.documentElement;
+if (urlObserverTarget) {
+  urlObserver.observe(urlObserverTarget, { childList: true, subtree: true });
+  console.log(`[YouTube Filter] URL observer: ${urlObserverTarget.tagName}`);
 }
 
 browser.runtime.onMessage.addListener((msg) => {
