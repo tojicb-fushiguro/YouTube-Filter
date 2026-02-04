@@ -196,6 +196,22 @@
     <label>Use Regular Expressions</label>
   </div>
 
+  <div class="checkbox-group">
+    <input type="checkbox" id="wordBoundary" />
+    <label>Match Whole Words Only</label>
+  </div>
+  <small class="help-text" style="margin-left: 28px; margin-top: -12px; display: block; margin-bottom: 16px;">
+    When enabled (with regex off), "game" won't match "gameplay". Ignored if regex mode is on.
+  </small>
+
+  <div class="checkbox-group">
+    <input type="checkbox" id="softHide" />
+    <label>Soft Hide (Blur instead of hide)</label>
+  </div>
+  <small class="help-text" style="margin-left: 28px; margin-top: -12px; display: block; margin-bottom: 16px;">
+    Shows filtered videos as blurred instead of hiding completely
+  </small>
+
   <button id="save">Save Settings</button>
   <button id="reset">Reset to Default</button>
 

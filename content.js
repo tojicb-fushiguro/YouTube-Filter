@@ -15,21 +15,127 @@ const DEFAULT_SETTINGS = {
   keywords: "",
   blocklist: "",
   regex: false,
-  enabled: true
+  enabled: true,
+  wordBoundary: false,
+  softHide: false
 };
 
-let currentSettings = { ...DEFAULT_SETTINGS };
+let currentSettings = { 
+  ...DEFAULT_SETTINGS,
+  // Performance optimization: cached parsed keywords
+  parsedAllowlist: [],
+  parsedBlocklist: [],
+  // Performance optimization: pre-compiled regex patterns
+  compiledAllowlistRegex: [],
+  compiledBlocklistRegex: []
+};
 let filterTimeout = null;
 
-function matches(text, list, useRegex) {
+/**
+ * Get the optimal MutationObserver target
+ * Targets YouTube-specific containers for better performance
+ */
+function getObserverTarget() {
+  return document.querySelector('ytd-app') || 
+         document.querySelector('#content') || 
+         document.querySelector('ytd-page-manager') || 
+         document.body;
+}
+
+/**
+ * Escape special regex characters for safe regex construction
+ */
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Compile regex patterns from keyword list
+ * @returns {RegExp[]} Array of compiled RegExp objects
+ */
+function compileRegexPatterns(keywords, useWordBoundary = false) {
+  if (!keywords || keywords.length === 0) return [];
+  
+  return keywords.map(keyword => {
+    if (!keyword) return null;
+    
+    try {
+      if (useWordBoundary) {
+        // Wrap keyword with word boundaries for whole word matching
+        const pattern = `\\b${escapeRegex(keyword)}\\b`;
+        return new RegExp(pattern, 'i');
+      } else {
+        // Standard regex pattern
+        return new RegExp(keyword, 'i');
+      }
+    } catch (e) {
+      console.warn(`[YouTube Filter] Invalid regex pattern: ${keyword}`, e);
+      return null;
+    }
+  }).filter(Boolean);
+}
+
+/**
+ * Prepare settings by parsing keywords and compiling regex patterns
+ * This optimization ensures parsing and compilation happens ONCE instead of on every video
+ */
+function prepareSettings(settings) {
+  // Parse keywords once and cache them
+  settings.parsedAllowlist = parseKeywords(settings.keywords);
+  settings.parsedBlocklist = parseKeywords(settings.blocklist);
+  
+  // Pre-compile regex patterns if regex mode is enabled
+  if (settings.regex) {
+    settings.compiledAllowlistRegex = compileRegexPatterns(settings.parsedAllowlist, false);
+    settings.compiledBlocklistRegex = compileRegexPatterns(settings.parsedBlocklist, false);
+  } else if (settings.wordBoundary) {
+    // Compile with word boundaries if word boundary mode is enabled
+    settings.compiledAllowlistRegex = compileRegexPatterns(settings.parsedAllowlist, true);
+    settings.compiledBlocklistRegex = compileRegexPatterns(settings.parsedBlocklist, true);
+  } else {
+    settings.compiledAllowlistRegex = [];
+    settings.compiledBlocklistRegex = [];
+  }
+  
+  console.log('[YouTube Filter] Settings prepared:', {
+    allowlist: settings.parsedAllowlist.length,
+    blocklist: settings.parsedBlocklist.length,
+    regex: settings.regex,
+    wordBoundary: settings.wordBoundary,
+    compiledRegex: settings.compiledAllowlistRegex.length + settings.compiledBlocklistRegex.length
+  });
+}
+
+/**
+ * Check if text matches any keyword in the list
+ * Uses pre-compiled regex patterns for performance
+ */
+function matches(text, list, compiledRegexList, useRegex, useWordBoundary) {
   if (!list || list.length === 0) return false;
   
+  // Use pre-compiled regex if available (much faster!)
+  if (compiledRegexList && compiledRegexList.length > 0) {
+    return compiledRegexList.some(regex => regex.test(text));
+  }
+  
+  // Fallback to substring matching (when regex disabled and no word boundary)
+  if (!useRegex && !useWordBoundary) {
+    return list.some(keyword => {
+      if (!keyword) return false;
+      return text.includes(keyword);
+    });
+  }
+  
+  // Fallback for dynamic regex (shouldn't happen with prepareSettings, but kept for safety)
   return list.some(keyword => {
     if (!keyword) return false;
     
     try {
       if (useRegex) {
         const regex = new RegExp(keyword, 'i');
+        return regex.test(text);
+      } else if (useWordBoundary) {
+        const regex = new RegExp(`\\b${escapeRegex(keyword)}\\b`, 'i');
         return regex.test(text);
       } else {
         return text.includes(keyword);
@@ -49,14 +155,66 @@ function parseKeywords(str) {
     .filter(Boolean);
 }
 
+/**
+ * Determine if content should be shown based on allowlist/blocklist
+ * Uses cached parsed keywords for performance (no re-parsing!)
+ */
 function shouldShowContent(title, settings) {
-  const allowlist = parseKeywords(settings.keywords);
-  const blocklist = parseKeywords(settings.blocklist);
+  // Use cached parsed lists instead of parsing every time
+  const allowlist = settings.parsedAllowlist || [];
+  const blocklist = settings.parsedBlocklist || [];
 
-  const isAllowed = allowlist.length === 0 || matches(title, allowlist, settings.regex);
-  const isBlocked = matches(title, blocklist, settings.regex);
+  const isAllowed = allowlist.length === 0 || matches(
+    title, 
+    allowlist, 
+    settings.compiledAllowlistRegex,
+    settings.regex,
+    settings.wordBoundary
+  );
+  
+  const isBlocked = matches(
+    title, 
+    blocklist, 
+    settings.compiledBlocklistRegex,
+    settings.regex,
+    settings.wordBoundary
+  );
 
   return isAllowed && !isBlocked;
+}
+
+/**
+ * Apply filtering style to element (hide or soft-hide)
+ */
+function applyFilterStyle(container, shouldShow, settings) {
+  if (!shouldShow) {
+    if (settings.softHide) {
+      // Soft-hide: blur and reduce opacity instead of hiding
+      container.style.display = '';
+      container.style.opacity = '0.3';
+      container.style.filter = 'blur(8px)';
+      container.style.pointerEvents = 'none';
+      container.setAttribute('data-filtered', 'soft');
+      container.setAttribute('aria-label', 'Filtered content (blurred)');
+    } else {
+      // Hard-hide: completely hide element (default behavior)
+      container.style.display = 'none';
+      container.style.opacity = '';
+      container.style.filter = '';
+      container.style.pointerEvents = '';
+      container.setAttribute('data-filtered', 'hard');
+      container.setAttribute('aria-hidden', 'true');
+    }
+  } else {
+    // Reset all styles when showing
+    container.style.display = '';
+    container.style.opacity = '';
+    container.style.filter = '';
+    container.style.pointerEvents = '';
+    container.removeAttribute('data-filtered');
+    container.removeAttribute('aria-label');
+    container.removeAttribute('aria-hidden');
+  }
 }
 
 function filterSidebarVideos(settings) {
@@ -98,18 +256,19 @@ function filterSidebarVideos(settings) {
       if (titleEl) title = titleEl.innerText || '';
     }
 
-    title = title.trim().toLowerCase();
-    if (!title || title.length < 5) return;
+    // Optimize: normalize title once
+    const normalizedTitle = title.trim().toLowerCase();
+    if (!normalizedTitle || normalizedTitle.length < 5) return;
 
     totalCount++;
 
-    if (!shouldShowContent(title, settings)) {
+    const shouldShow = shouldShowContent(normalizedTitle, settings);
+    if (!shouldShow) {
       hiddenCount++;
-      console.log(`[YouTube Filter] 🚫 "${title.substring(0, 40)}..."`);
-      container.style.display = 'none';
-    } else {
-      container.style.display = '';
+      console.log(`[YouTube Filter] 🚫 "${normalizedTitle.substring(0, 40)}..."`);
     }
+    
+    applyFilterStyle(container, shouldShow, settings);
   });
 
   console.log(`[YouTube Filter] Sidebar: ${hiddenCount}/${totalCount} hidden`);
@@ -157,21 +316,23 @@ function filterVideos(settings) {
       titleEl?.innerText || 
       titleEl?.textContent ||
       ''
-    ).toLowerCase().trim();
+    );
 
-    if (!title || title.length < 5) {
+    // Optimize: normalize title once
+    const normalizedTitle = title.toLowerCase().trim();
+    if (!normalizedTitle || normalizedTitle.length < 5) {
       return;
     }
 
     totalCount++;
 
-    if (!shouldShowContent(title, settings)) {
+    const shouldShow = shouldShowContent(normalizedTitle, settings);
+    if (!shouldShow) {
       hiddenCount++;
-      console.log(`[YouTube Filter] 🚫 Hiding: "${title.substring(0, 50)}..."`);
-      video.style.display = 'none';
-    } else {
-      video.style.display = '';
+      console.log(`[YouTube Filter] 🚫 Hiding: "${normalizedTitle.substring(0, 50)}..."`);
     }
+    
+    applyFilterStyle(video, shouldShow, settings);
   });
 
   console.log(`[YouTube Filter] 📊 Main feed: ${hiddenCount}/${totalCount} hidden`);
@@ -196,16 +357,18 @@ function filterShorts(settings) {
       }
     }
 
-    const title = (titleEl?.title || titleEl?.innerText || '').toLowerCase().trim();
+    const title = (titleEl?.title || titleEl?.innerText || '');
 
-    if (!title) return;
+    // Optimize: normalize title once
+    const normalizedTitle = title.toLowerCase().trim();
+    if (!normalizedTitle) return;
 
-    if (!shouldShowContent(title, settings)) {
+    const shouldShow = shouldShowContent(normalizedTitle, settings);
+    if (!shouldShow) {
       hiddenCount++;
-      container.style.display = 'none';
-    } else {
-      container.style.display = '';
     }
+    
+    applyFilterStyle(container, shouldShow, settings);
   });
 
   console.log(`[YouTube Filter] Shorts: ${hiddenCount} hidden`);
@@ -213,9 +376,20 @@ function filterShorts(settings) {
 
 function runAllFilters() {
   console.log('[YouTube Filter] ========== FILTERING ==========');
+  
+  // Optimization: disconnect observer during batch filtering to avoid recursive calls
+  observer.disconnect();
+  
   filterVideos(currentSettings);
   filterShorts(currentSettings);
   filterSidebarVideos(currentSettings);
+  
+  // Reconnect observer after filtering
+  const target = getObserverTarget();
+  if (target) {
+    observer.observe(target, { childList: true, subtree: true });
+  }
+  
   console.log('[YouTube Filter] ========== DONE ==========');
 }
 
@@ -228,7 +402,11 @@ async function initialize() {
   console.log('[YouTube Filter] 🚀 Starting');
   try {
     const settings = await browser.storage.sync.get(DEFAULT_SETTINGS);
-    currentSettings = settings;
+    currentSettings = { ...currentSettings, ...settings };
+    
+    // Performance optimization: prepare settings once at startup
+    prepareSettings(currentSettings);
+    
     console.log('[YouTube Filter] Settings:', settings);
     runAllFilters();
     setTimeout(runAllFilters, 1500);
@@ -239,8 +417,11 @@ async function initialize() {
 
 const observer = new MutationObserver(() => scheduleFilter());
 
+// Optimization: Observe more specific YouTube container instead of entire body
 if (document.body) {
-  observer.observe(document.body, { childList: true, subtree: true });
+  const target = getObserverTarget();
+  observer.observe(target, { childList: true, subtree: true });
+  console.log(`[YouTube Filter] Observing: ${target.tagName || 'body'}`);
 }
 
 let lastUrl = location.href;
@@ -257,7 +438,11 @@ browser.runtime.onMessage.addListener((msg) => {
     return (async () => {
       try {
         const settings = await browser.storage.sync.get(DEFAULT_SETTINGS);
-        currentSettings = settings;
+        currentSettings = { ...currentSettings, ...settings };
+        
+        // Performance optimization: prepare settings on update
+        prepareSettings(currentSettings);
+        
         runAllFilters();
       } catch (error) {
         console.error('[YouTube Filter] Error reloading settings:', error);
@@ -270,7 +455,11 @@ browser.storage.onChanged.addListener(async (changes, namespace) => {
   if (namespace === 'sync') {
     try {
       const settings = await browser.storage.sync.get(DEFAULT_SETTINGS);
-      currentSettings = settings;
+      currentSettings = { ...currentSettings, ...settings };
+      
+      // Performance optimization: prepare settings on change
+      prepareSettings(currentSettings);
+      
       runAllFilters();
     } catch (error) {
       console.error('[YouTube Filter] Error handling storage change:', error);
