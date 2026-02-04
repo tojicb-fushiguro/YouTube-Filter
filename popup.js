@@ -15,7 +15,9 @@ const DEFAULT_SETTINGS = {
   keywords: "",
   blocklist: "",
   regex: false,
-  enabled: true
+  enabled: true,
+  wordBoundary: false,
+  softHide: false
 };
 
 // Load current settings when popup opens
@@ -26,6 +28,8 @@ async function loadSettings() {
     document.getElementById("blocklist").value = settings.blocklist || "";
     document.getElementById("regex").checked = settings.regex || false;
     document.getElementById("enabled").checked = settings.enabled !== false;
+    document.getElementById("wordBoundary").checked = settings.wordBoundary || false;
+    document.getElementById("softHide").checked = settings.softHide || false;
   } catch (error) {
     console.error('[YouTube Filter] Error loading settings:', error);
   }
@@ -48,7 +52,9 @@ document.getElementById("save").addEventListener("click", async () => {
     keywords: document.getElementById("keywords").value.trim(),
     blocklist: document.getElementById("blocklist").value.trim(),
     regex: document.getElementById("regex").checked,
-    enabled: document.getElementById("enabled").checked
+    enabled: document.getElementById("enabled").checked,
+    wordBoundary: document.getElementById("wordBoundary").checked,
+    softHide: document.getElementById("softHide").checked
   };
 
   try {
