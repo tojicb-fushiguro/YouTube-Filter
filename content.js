@@ -224,7 +224,8 @@ const HOURS_PER_DAY = 24;
 const HOURS_PER_WEEK = 24 * 7;
 const HOURS_PER_MONTH = 24 * 30;
 const HOURS_PER_YEAR = 24 * 365;
-const STREAMED_CONTENT_DEFAULT_HOURS = 12;
+// Default assumption for streamed content (treated as recent, approximately half a day old)
+const STREAMED_CONTENT_DEFAULT_HOURS = HOURS_PER_DAY / 2;
 
 /**
  * Extract upload time text from video element
