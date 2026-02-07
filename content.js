@@ -17,7 +17,8 @@ const DEFAULT_SETTINGS = {
   regex: false,
   enabled: true,
   wordBoundary: false,
-  softHide: false
+  softHide: false,
+  dateFilter: "any"
 };
 
 let currentSettings = { 
@@ -218,6 +219,124 @@ function applyFilterStyle(container, shouldShow, settings) {
   }
 }
 
+/**
+ * Extract upload time text from video element
+ * @param {HTMLElement} container - Video container element
+ * @returns {string|null} - Relative time text (e.g., "2 hours ago") or null
+ */
+function getUploadTimeText(container) {
+  // Try different selectors for upload time metadata
+  const selectors = [
+    '#metadata-line span.inline-metadata-item',
+    '#metadata-line span',
+    'ytd-video-meta-block span',
+    '.metadata-line span'
+  ];
+  
+  for (const selector of selectors) {
+    const spans = container.querySelectorAll(selector);
+    for (const span of spans) {
+      const text = span.textContent.trim().toLowerCase();
+      // Check if text contains time-related keywords
+      if (text.includes('ago') || text.includes('streamed') || 
+          text.includes('hour') || text.includes('day') || 
+          text.includes('week') || text.includes('month') || 
+          text.includes('year') || text.includes('minute') || 
+          text.includes('second')) {
+        return text;
+      }
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Parse relative time text into approximate hours
+ * @param {string} timeText - Relative time text (e.g., "2 hours ago")
+ * @returns {number|null} - Approximate hours or null if parsing fails
+ */
+function parseRelativeTime(timeText) {
+  if (!timeText) return null;
+  
+  timeText = timeText.toLowerCase().trim();
+  
+  // Extract number from text
+  const match = timeText.match(/(\d+)/);
+  if (!match) {
+    // Handle special cases like "streamed live" or text without numbers
+    if (timeText.includes('streamed')) {
+      // Treat as recent (within 24 hours)
+      return 12;
+    }
+    return null;
+  }
+  
+  const value = parseInt(match[1], 10);
+  
+  // Convert to hours based on unit
+  if (timeText.includes('second')) {
+    return value / 3600; // Convert seconds to hours
+  } else if (timeText.includes('minute')) {
+    return value / 60; // Convert minutes to hours
+  } else if (timeText.includes('hour')) {
+    return value;
+  } else if (timeText.includes('day')) {
+    return value * 24;
+  } else if (timeText.includes('week')) {
+    return value * 24 * 7;
+  } else if (timeText.includes('month')) {
+    return value * 24 * 30; // Approximate month as 30 days
+  } else if (timeText.includes('year')) {
+    return value * 24 * 365;
+  }
+  
+  return null;
+}
+
+/**
+ * Check if video passes the date filter
+ * @param {HTMLElement} container - Video container element
+ * @param {Object} settings - Current settings
+ * @returns {boolean} - True if video should be shown
+ */
+function passesDateFilter(container, settings) {
+  // If date filter is disabled (any), always pass
+  if (!settings.dateFilter || settings.dateFilter === 'any') {
+    return true;
+  }
+  
+  // Extract upload time text
+  const timeText = getUploadTimeText(container);
+  
+  // Fail open: if we can't find the time, show the video
+  if (!timeText) {
+    return true;
+  }
+  
+  // Parse time to hours
+  const hours = parseRelativeTime(timeText);
+  
+  // Fail open: if we can't parse the time, show the video
+  if (hours === null) {
+    return true;
+  }
+  
+  // Check against filter thresholds
+  switch (settings.dateFilter) {
+    case 'today':
+      return hours <= 24;
+    case 'week':
+      return hours <= 24 * 7;
+    case 'month':
+      return hours <= 24 * 30;
+    case 'year':
+      return hours <= 24 * 365;
+    default:
+      return true;
+  }
+}
+
 function filterSidebarVideos(settings) {
   if (!settings.enabled) return;
 
@@ -263,7 +382,7 @@ function filterSidebarVideos(settings) {
 
     totalCount++;
 
-    const shouldShow = shouldShowContent(normalizedTitle, settings);
+    const shouldShow = shouldShowContent(normalizedTitle, settings) && passesDateFilter(container, settings);
     if (!shouldShow) {
       hiddenCount++;
       console.log(`[YouTube Filter] 🚫 "${normalizedTitle.substring(0, 40)}..."`);
@@ -327,7 +446,7 @@ function filterVideos(settings) {
 
     totalCount++;
 
-    const shouldShow = shouldShowContent(normalizedTitle, settings);
+    const shouldShow = shouldShowContent(normalizedTitle, settings) && passesDateFilter(video, settings);
     if (!shouldShow) {
       hiddenCount++;
       console.log(`[YouTube Filter] 🚫 Hiding: "${normalizedTitle.substring(0, 50)}..."`);
@@ -364,7 +483,7 @@ function filterShorts(settings) {
     const normalizedTitle = title.toLowerCase().trim();
     if (!normalizedTitle) return;
 
-    const shouldShow = shouldShowContent(normalizedTitle, settings);
+    const shouldShow = shouldShowContent(normalizedTitle, settings) && passesDateFilter(container, settings);
     if (!shouldShow) {
       hiddenCount++;
     }

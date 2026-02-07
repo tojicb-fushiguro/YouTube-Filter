@@ -172,6 +172,21 @@
   </div>
 
   <div class="section">
+    <label class="section-label" for="dateFilter">📅 Upload Date Filter</label>
+    <select 
+      id="dateFilter"
+      style="width: 100%; padding: 10px 12px; background: #1e1e1e; color: #fff; border: 1px solid #333; border-radius: 6px; font-size: 13px; cursor: pointer; margin-bottom: 6px;"
+    >
+      <option value="any">Any Time (No Filter)</option>
+      <option value="today">Today (Last 24 Hours)</option>
+      <option value="week">This Week (Last 7 Days)</option>
+      <option value="month">This Month (Last 30 Days)</option>
+      <option value="year">This Year (Last 365 Days)</option>
+    </select>
+    <small class="help-text">Show only videos uploaded within the selected time range</small>
+  </div>
+
+  <div class="section">
     <label class="section-label" for="keywords">✅ Allowlist Keywords</label>
     <input 
       id="keywords" 

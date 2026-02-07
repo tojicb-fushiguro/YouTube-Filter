@@ -17,7 +17,8 @@ const DEFAULT_SETTINGS = {
   regex: false,
   enabled: true,
   wordBoundary: false,
-  softHide: false
+  softHide: false,
+  dateFilter: "any"
 };
 
 // Load current settings when popup opens
@@ -30,6 +31,7 @@ async function loadSettings() {
     document.getElementById("enabled").checked = settings.enabled !== false;
     document.getElementById("wordBoundary").checked = settings.wordBoundary || false;
     document.getElementById("softHide").checked = settings.softHide || false;
+    document.getElementById("dateFilter").value = settings.dateFilter || "any";
   } catch (error) {
     console.error('[YouTube Filter] Error loading settings:', error);
   }
@@ -54,7 +56,8 @@ document.getElementById("save").addEventListener("click", async () => {
     regex: document.getElementById("regex").checked,
     enabled: document.getElementById("enabled").checked,
     wordBoundary: document.getElementById("wordBoundary").checked,
-    softHide: document.getElementById("softHide").checked
+    softHide: document.getElementById("softHide").checked,
+    dateFilter: document.getElementById("dateFilter").value
   };
 
   try {
