@@ -91,7 +91,7 @@
       margin-bottom: 8px;
     }
 
-    input[type="text"] {
+    input[type="text"], select {
       width: 100%;
       padding: 10px 12px;
       background: #1e1e1e;
@@ -103,7 +103,12 @@
       margin-bottom: 6px;
     }
 
-    input[type="text"]:focus {
+    select {
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    }
+
+    input[type="text"]:focus, select:focus {
       outline: none;
       border-color: #ff0000;
     }
@@ -172,18 +177,6 @@
   </div>
 
   <div class="section">
-    <label class="section-label" for="dateFilter">📅 Upload Date Filter</label>
-    <select id="dateFilter">
-      <option value="any">Any Time (No Filter)</option>
-      <option value="today">Today (Last 24 Hours)</option>
-      <option value="week">This Week (Last 7 Days)</option>
-      <option value="month">This Month (Last 30 Days)</option>
-      <option value="year">This Year (Last 365 Days)</option>
-    </select>
-    <small class="help-text">Show only videos uploaded within the selected time range</small>
-  </div>
-
-  <div class="section">
     <label class="section-label" for="keywords">✅ Allowlist Keywords</label>
     <input 
       id="keywords" 
@@ -201,6 +194,18 @@
       placeholder="vlog, reaction, shorts"
     />
     <small class="help-text">Videos matching these will be hidden</small>
+  </div>
+
+  <div class="section">
+    <label class="section-label" for="dateFilter">📅 Upload Date Filter</label>
+    <select id="dateFilter">
+      <option value="any">All videos (no date filter)</option>
+      <option value="today">Today (last 24 hours)</option>
+      <option value="week">This week</option>
+      <option value="month">This month</option>
+      <option value="year">This year</option>
+    </select>
+    <small class="help-text">Only show videos uploaded within this time range</small>
   </div>
 
   <div class="checkbox-group">
@@ -228,7 +233,7 @@
   <button id="reset">Reset to Default</button>
 
   <div class="footer">
-    Filters apply to video titles only
+    Filters apply to video titles and upload dates
   </div>
 
   <script src="browser-polyfill.js"></script>
