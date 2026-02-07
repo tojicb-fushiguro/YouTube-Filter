@@ -219,6 +219,13 @@ function applyFilterStyle(container, shouldShow, settings) {
   }
 }
 
+// Date filter constants
+const HOURS_PER_DAY = 24;
+const HOURS_PER_WEEK = 24 * 7;
+const HOURS_PER_MONTH = 24 * 30;
+const HOURS_PER_YEAR = 24 * 365;
+const STREAMED_CONTENT_DEFAULT_HOURS = 12;
+
 /**
  * Extract upload time text from video element
  * @param {HTMLElement} container - Video container element
@@ -267,7 +274,7 @@ function parseRelativeTime(timeText) {
     // Handle special cases like "streamed live" or text without numbers
     if (timeText.includes('streamed')) {
       // Treat as recent (within 24 hours)
-      return 12;
+      return STREAMED_CONTENT_DEFAULT_HOURS;
     }
     return null;
   }
@@ -282,13 +289,13 @@ function parseRelativeTime(timeText) {
   } else if (timeText.includes('hour')) {
     return value;
   } else if (timeText.includes('day')) {
-    return value * 24;
+    return value * HOURS_PER_DAY;
   } else if (timeText.includes('week')) {
-    return value * 24 * 7;
+    return value * HOURS_PER_WEEK;
   } else if (timeText.includes('month')) {
-    return value * 24 * 30; // Approximate month as 30 days
+    return value * HOURS_PER_MONTH;
   } else if (timeText.includes('year')) {
-    return value * 24 * 365;
+    return value * HOURS_PER_YEAR;
   }
   
   return null;
@@ -325,13 +332,13 @@ function passesDateFilter(container, settings) {
   // Check against filter thresholds
   switch (settings.dateFilter) {
     case 'today':
-      return hours <= 24;
+      return hours <= HOURS_PER_DAY;
     case 'week':
-      return hours <= 24 * 7;
+      return hours <= HOURS_PER_WEEK;
     case 'month':
-      return hours <= 24 * 30;
+      return hours <= HOURS_PER_MONTH;
     case 'year':
-      return hours <= 24 * 365;
+      return hours <= HOURS_PER_YEAR;
     default:
       return true;
   }
