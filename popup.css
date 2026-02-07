@@ -60,6 +60,29 @@ input[type="text"]:focus {
   border-color: #ff0000;
 }
 
+select {
+  width: 100%;
+  padding: 10px 12px;
+  background: #1e1e1e;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  margin-bottom: 4px;
+}
+
+select:focus {
+  outline: none;
+  border-color: #ff0000;
+}
+
+select option {
+  background: #1e1e1e;
+  color: #fff;
+}
+
 input[type="checkbox"] {
   margin-right: 10px;
   cursor: pointer;
