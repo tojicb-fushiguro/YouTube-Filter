@@ -1,3 +1,7 @@
+
+<img width="128" height="128" alt="icon-128" src="https://github.com/user-attachments/assets/f15726ef-00aa-4f0f-8667-5c19765e6c70" />
+
+
 # 🎬 YouTube Advanced Filter (v2)
 
 A browser extension that gives you granular control over YouTube’s interface and video filtering.
