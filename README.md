@@ -22,6 +22,9 @@ It works on:
 
 The extension operates purely on the DOM after the page loads.  
 It does **not** intercept network requests or modify YouTube APIs.
+<img width="1919" height="959" alt="image" src="https://github.com/user-attachments/assets/513d95ad-91dd-4a14-9d82-fa63778c32db" />
+<img width="1043" height="948" alt="image" src="https://github.com/user-attachments/assets/ab1d40c2-0bd6-498e-8032-4d530ee492ff" />
+
 
 ---
 
