@@ -1,108 +1,97 @@
 /**
  * YouTube Advanced Keyword Filter - Popup Script
- * 
- * Handles user interaction with extension settings popup.
- * Manages saving/loading settings from browser storage.
- * Cross-browser compatible (Chrome & Firefox).
- * 
+ *
  * @author tojicb-fushiguro
  * @repository https://github.com/tojicb-fushiguro/YouTube-Filter
- * @license MIT
  */
 
-// Default settings
 const DEFAULT_SETTINGS = {
   keywords: "",
   blocklist: "",
+  channelAllowlist: "",
+  channelBlocklist: "",
   regex: false,
   enabled: true,
   wordBoundary: false,
   softHide: false,
-  dateFilter: "any"
+  dateFilter: "any",
+  hideShorts: false,
+  hideHomepageFeed: false,
+  hideAllComments: false,
+  hideSponsoredCards: false,
+  hideSubscriptionCard: false,
+  hideSubscriptionButton: false,
+  hidePlaylistCards: false,
+  hideMembersOnlyVideos: false,
+  hideMixRadioPlaylists: false,
+  hideVideoSidebar: false,
+  hideLiveChat: false,
+  hideWatchPlaylistPanel: false,
+  hideTopHeader: false,
+  hideNotificationBell: false,
+  hideExploreSection: false,
+  hideMoreFromYoutube: false,
+  hideYouSection: false,
+  disableAutoplay: false
 };
 
-// Load current settings when popup opens
-async function loadSettings() {
+async function loadPopup() {
   try {
     const settings = await browser.storage.sync.get(DEFAULT_SETTINGS);
-    document.getElementById("keywords").value = settings.keywords || "";
-    document.getElementById("blocklist").value = settings.blocklist || "";
-    document.getElementById("regex").checked = settings.regex || false;
-    document.getElementById("enabled").checked = settings.enabled !== false;
-    document.getElementById("wordBoundary").checked = settings.wordBoundary || false;
-    document.getElementById("softHide").checked = settings.softHide || false;
-    document.getElementById("dateFilter").value = settings.dateFilter || "any";
-  } catch (error) {
-    console.error('[YouTube Filter] Error loading settings:', error);
+    document.getElementById('enabled').checked = settings.enabled !== false;
+    updateStats(settings);
+  } catch (e) {
+    console.error('[YouTube Filter] Popup load error:', e);
   }
 }
 
-// Show status message
-function showStatus(message, isError = false) {
-  const status = document.getElementById("status");
-  status.textContent = message;
-  status.className = `status show ${isError ? "error" : "success"}`;
-  
-  setTimeout(() => {
-    status.classList.remove("show");
-  }, 3000);
+function updateStats(settings) {
+  const domToggles = [
+    'hideShorts', 'hideHomepageFeed', 'hideAllComments',
+    'hideSponsoredCards', 'hideSubscriptionCard', 'hideSubscriptionButton',
+    'hidePlaylistCards', 'hideMembersOnlyVideos', 'hideMixRadioPlaylists',
+    'hideVideoSidebar', 'hideLiveChat', 'hideWatchPlaylistPanel',
+    'hideTopHeader', 'hideNotificationBell',
+    'hideExploreSection', 'hideMoreFromYoutube', 'hideYouSection',
+    'disableAutoplay'
+  ];
+  const activeToggles = domToggles.filter((k) => settings[k]).length;
+  const hasAllowlist = settings.keywords?.trim().length > 0;
+  const hasBlocklist = settings.blocklist?.trim().length > 0;
+  const hasChannelAllowlist = settings.channelAllowlist?.trim().length > 0;
+  const hasChannelBlocklist = settings.channelBlocklist?.trim().length > 0;
+  const hasDateFilter = settings.dateFilter && settings.dateFilter !== 'any';
+
+  const parts = [];
+  if (activeToggles > 0) parts.push(`<span>${activeToggles}</span> hide rule${activeToggles !== 1 ? 's' : ''} active`);
+  if (hasAllowlist) parts.push('title allowlist on');
+  if (hasBlocklist) parts.push('title blocklist on');
+  if (hasChannelAllowlist) parts.push('channel allowlist on');
+  if (hasChannelBlocklist) parts.push('channel blocklist on');
+  if (hasDateFilter) parts.push(`date: ${settings.dateFilter}`);
+
+  document.getElementById('stats').innerHTML =
+    parts.length > 0 ? parts.join(' · ') : 'No active filters';
 }
 
-// Save settings
-document.getElementById("save").addEventListener("click", async () => {
-  const settings = {
-    keywords: document.getElementById("keywords").value.trim(),
-    blocklist: document.getElementById("blocklist").value.trim(),
-    regex: document.getElementById("regex").checked,
-    enabled: document.getElementById("enabled").checked,
-    wordBoundary: document.getElementById("wordBoundary").checked,
-    softHide: document.getElementById("softHide").checked,
-    dateFilter: document.getElementById("dateFilter").value
-  };
-
+document.getElementById('enabled').addEventListener('change', async (e) => {
   try {
-    await browser.storage.sync.set(settings);
-    showStatus("✓ Settings saved successfully");
-    
-    // Notify content script to re-filter
-    try {
-      const tabs = await browser.tabs.query({ url: "https://www.youtube.com/*" });
-      tabs.forEach(tab => {
-        browser.tabs.sendMessage(tab.id, { action: "refilter" }).catch(() => {
-          // Ignore errors if content script isn't ready
-        });
-      });
-    } catch (error) {
-      // Ignore errors - settings are saved, just couldn't notify tabs
-    }
-  } catch (error) {
-    showStatus("Error saving settings", true);
-    console.error('[YouTube Filter] Error saving settings:', error);
+    await browser.storage.sync.set({ enabled: e.target.checked });
+    const tabs = await browser.tabs.query({ url: 'https://www.youtube.com/*' });
+    tabs.forEach((tab) =>
+      browser.tabs.sendMessage(tab.id, { action: 'refilter' }).catch(() => {})
+    );
+  } catch (err) {
+    console.error('[YouTube Filter] Error saving enabled state:', err);
   }
 });
 
-// Reset to defaults
-document.getElementById("reset").addEventListener("click", async () => {
-  if (confirm("Reset all settings to default?")) {
-    try {
-      await browser.storage.sync.set(DEFAULT_SETTINGS);
-      await loadSettings();
-      showStatus("✓ Reset to defaults");
-    } catch (error) {
-      showStatus("Error resetting settings", true);
-      console.error('[YouTube Filter] Error resetting settings:', error);
-    }
+document.getElementById('openSettings').addEventListener('click', () => {
+  if (chrome?.runtime?.openOptionsPage) {
+    chrome.runtime.openOptionsPage();
+  } else {
+    browser.runtime.openOptionsPage?.();
   }
 });
 
-// Load settings when popup opens
-document.addEventListener("DOMContentLoaded", loadSettings);
-
-// Allow Enter key to save in text fields
-document.querySelectorAll("input[type='text']").forEach(input => {
-  input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      document.getElementById("save").click();
-    }
-  });
-});
+document.addEventListener('DOMContentLoaded', loadPopup);
