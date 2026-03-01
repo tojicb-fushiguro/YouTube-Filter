@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>YouTube Filter — Settings</title>
+  <script src="browser-polyfill.js"></script>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+
+  <nav class="sidebar">
+    <div class="sidebar-logo">🎬 YT Filter</div>
+    <ul class="sidebar-nav">
+      <li><a href="#section-core"       class="nav-link active" data-section="core">🔴 Core</a></li>
+      <li><a href="#section-feeds"      class="nav-link"        data-section="feeds">🟢 Feeds</a></li>
+      <li><a href="#section-watchpage"  class="nav-link"        data-section="watchpage">🟣 Watch Page</a></li>
+      <li><a href="#section-navigation" class="nav-link"        data-section="navigation">⬜ Navigation</a></li>
+      <li><a href="#section-filters"    class="nav-link"        data-section="filters">🔵 Keyword Filters</a></li>
+    </ul>
+    <div class="sidebar-footer">v2.0</div>
+  </nav>
+
+  <main class="main">
+
+    <div class="top-bar">
+      <h1>Settings</h1>
+      <div class="top-bar-actions">
+        <div id="saveStatus" class="save-status"></div>
+        <button id="saveBtn" class="btn-save">Save Settings</button>
+        <button id="resetBtn" class="btn-reset">Reset</button>
+      </div>
+    </div>
+
+    <!-- CORE -->
+    <section id="section-core" class="settings-section active">
+      <div class="section-header section-header--red">
+        <span class="section-title">Core</span>
+        <span class="section-desc">Global YouTube controls</span>
+      </div>
+      <div class="toggle-group">
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Shorts</span>
+            <span class="toggle-desc">Hides all Shorts shelves and individual Short cards (Home/Watch Page)</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideShorts" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Homepage Feed</span>
+            <span class="toggle-desc">Hides the main video grid on the YouTube homepage</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideHomepageFeed" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide All Comments</span>
+            <span class="toggle-desc">Hides the entire comments section on watch pages</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideAllComments" /><span class="slider"></span></label>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FEEDS -->
+    <section id="section-feeds" class="settings-section">
+      <div class="section-header section-header--green">
+        <span class="section-title">Feeds</span>
+        <span class="section-desc">Control what appears in video feeds</span>
+      </div>
+      <div class="toggle-group">
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Sponsored Cards</span>
+            <span class="toggle-desc">Removes promoted and ad video cards from feeds</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideSponsoredCards" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Subscription Section</span>
+            <span class="toggle-desc">Hides the Subscriptions section in the left sidebar</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideSubscriptionCard" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Subscription Button</span>
+            <span class="toggle-desc">Hides the Subscribe button on videos and channel pages</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideSubscriptionButton" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Playlist Cards</span>
+            <span class="toggle-desc">Hides playlist cards from search results and feeds</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hidePlaylistCards" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Members-only Videos</span>
+            <span class="toggle-desc">Hides videos that require a channel membership</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideMembersOnlyVideos" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Mix / Radio Playlists</span>
+            <span class="toggle-desc">Hides auto-generated YouTube Mix and Radio entries</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideMixRadioPlaylists" /><span class="slider"></span></label>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- WATCH PAGE -->
+    <section id="section-watchpage" class="settings-section">
+      <div class="section-header section-header--purple">
+        <span class="section-title">Watch Page</span>
+        <span class="section-desc">Control elements on video watch pages</span>
+      </div>
+      <div class="toggle-group">
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Video Sidebar</span>
+            <span class="toggle-desc">Hides the entire right column (recommended videos)</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideVideoSidebar" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Live Chat</span>
+            <span class="toggle-desc">Hides the live chat panel on streams and premieres</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideLiveChat" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Watch Playlist Panel</span>
+            <span class="toggle-desc">Hides the playlist panel when watching a playlist video</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideWatchPlaylistPanel" /><span class="slider"></span></label>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- NAVIGATION -->
+    <section id="section-navigation" class="settings-section">
+      <div class="section-header section-header--gray">
+        <span class="section-title">Navigation</span>
+        <span class="section-desc">Control the YouTube header and sidebar navigation</span>
+      </div>
+      <div class="toggle-group">
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Top Header</span>
+            <span class="toggle-desc">Hides the entire YouTube top navigation bar</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideTopHeader" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Notification Bell</span>
+            <span class="toggle-desc">Hides the notification bell icon in the header</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideNotificationBell" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide Explore Section</span>
+            <span class="toggle-desc">Hides the Explore section (Music, Gaming, Sport) from the left sidebar</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideExploreSection" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide More from YouTube</span>
+            <span class="toggle-desc">Hides the "More from YouTube" section (YouTube Premium, Studio, Music, Kids) from the left sidebar</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideMoreFromYoutube" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Hide "You" Section</span>
+            <span class="toggle-desc">Hides the "You" section (History, Playlists, Watch Later, Liked videos, Your videos, Downloads) from the left sidebar</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="hideYouSection" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Disable Autoplay</span>
+            <span class="toggle-desc">Automatically turns off the autoplay toggle on watch pages</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="disableAutoplay" /><span class="slider"></span></label>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- KEYWORD FILTERS -->
+    <section id="section-filters" class="settings-section">
+      <div class="section-header section-header--blue">
+        <span class="section-title">Keyword Filters</span>
+        <span class="section-desc">Filter videos by title keywords</span>
+      </div>
+      <div class="toggle-group">
+
+        <div class="input-row">
+          <label class="input-label" for="keywords">Allowlist Keywords</label>
+          <input type="text" id="keywords" placeholder="e.g. coding, tutorial, review" />
+          <small>Only show videos whose titles match these comma-separated keywords</small>
+        </div>
+
+        <div class="input-row">
+          <label class="input-label" for="blocklist">Blocklist Keywords</label>
+          <input type="text" id="blocklist" placeholder="e.g. clickbait, drama, react" />
+          <small>Hide videos whose titles match these comma-separated keywords</small>
+        </div>
+
+        <div class="input-row">
+          <label class="input-label" for="dateFilter">Date Filter</label>
+          <select id="dateFilter">
+            <option value="any">Any time</option>
+            <option value="today">Today</option>
+            <option value="week">This week</option>
+            <option value="month">This month</option>
+            <option value="year">This year</option>
+          </select>
+          <small>Only show videos uploaded within the selected time range</small>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Use Regex</span>
+            <span class="toggle-desc">Treat keywords as regular expressions</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="regex" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Match Whole Words Only</span>
+            <span class="toggle-desc">"game" won't match "gameplay". Ignored if regex is on.</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="wordBoundary" /><span class="slider"></span></label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Soft Hide (Blur)</span>
+            <span class="toggle-desc">Blurs filtered videos instead of hiding them completely</span>
+          </div>
+          <label class="switch"><input type="checkbox" id="softHide" /><span class="slider"></span></label>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="options.js"></script>
+</body>
+</html>
