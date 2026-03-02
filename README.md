@@ -29,6 +29,7 @@ It does **not** intercept network requests or modify YouTube APIs.
 <img width="1919" height="951" alt="image" src="https://github.com/user-attachments/assets/fb81e5b8-1772-49d8-a14f-bd1d2f1a8e9d" />
 
 <img width="1043" height="948" alt="image" src="https://github.com/user-attachments/assets/ab1d40c2-0bd6-498e-8032-4d530ee492ff" />
+<img width="904" height="1280" alt="image" src="https://github.com/user-attachments/assets/6325aedc-5fd1-40a8-8615-91504e61a7e6" />
 
 
 ---
